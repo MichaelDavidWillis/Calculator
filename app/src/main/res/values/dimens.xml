@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- layout dimensions -->
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="text_sum_display">20dp</dimen>
+    <dimen name="text_answer_display">60dp</dimen>
+
+    <!-- text dimensions -->
+    <dimen name="text_large">27dp</dimen>
+
+</resources>
