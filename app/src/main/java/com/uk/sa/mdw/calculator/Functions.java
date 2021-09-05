@@ -16,6 +16,7 @@
  */
 package com.uk.sa.mdw.calculator;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * {@code Functions} class handles the functionality of the calculator application.
  *
- * @version 0.1
+ * @version 0.2
  * @author Michael David Willis
  */
 
@@ -33,15 +34,15 @@ public class Functions implements UpdateDisplays {
 
     String sumToCalculate = "";
     String currentNumber = "";
-    // List of Numbers in order to implement Doubles later
     List<Number> values = new ArrayList<>();
-    private final List<String> operators = new ArrayList<>();
+    List<String> operators = new ArrayList<>();
+    static boolean isDecimal;
 
     /**
      * {@code concatToSum} concatenates the digit represented buttonPressed to both sumToCalculate
      * (variable that stores the full calculation to display) and currentNumber (variable used to
      * store the current number made from by user), then calls setOperations from
-     * {@link com.uk.sa.mdw.calculator.SetClicks}.
+     * {@link SetClicks}.
      *
      * @param buttonPressed the numeric button pressed to call the command
      */
@@ -49,24 +50,46 @@ public class Functions implements UpdateDisplays {
         // add digit to number
         sumToCalculate += buttonPressed.getText().toString();
         currentNumber += buttonPressed.getText().toString();
-        // display the sum so far in sumDisplay
+        // display the sum so far
         updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate);
         // set listeners on the operational buttons
         Init.getClicks().setOperations();
     }
 
     /**
-     * {@code operationHandler} adds
-     * <br>
+     * {@code makeDouble} checks if {@code currentNumber} is empty, adding "0." if so or "."
+     * if not to both {@code sumToCalculate} and {@code currentNumber} and updates the display.
+     */
+    void makeDecimal() {
+        // add digit to number
+        if (currentNumber.length() == 0){
+            sumToCalculate += "0.";
+            currentNumber += "0.";
+            Log.d("CREATION", "length 0");
+        }
+        else {
+            sumToCalculate += ".";
+            currentNumber += ".";
+            Log.d("CREATION", "length > 0");
+        }
+        // display the sum so far in sumDisplay
+        updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate);
+    }
+
+    /**
      * Once a new number has been set and stored by pressing a operational button,
      * {@code operationHandler} is called.
-     *
+     * <br>
+     * Calls {@code addNumberToList}, clears {@code currentNumber}, set operator buttons
+     * to unclickable, adds the operator pressed to sumToCalculate, updates the display,
+     * adds the operator to the ArrayList {@code operators} and makes buttonDecimal clickable.
      *
      * @param view the operation button pressed to call the command
      */
     void operationHandler(View view) {
         // save the number
-        values.add(Integer.parseInt(currentNumber));
+        addNumberToList();
+
         // clear currentNumber to save the next number
         currentNumber = "";
         // add the operator symbol to the display
@@ -77,68 +100,43 @@ public class Functions implements UpdateDisplays {
             view1.setClickable(false);
         }
         operators.add(((Button) view).getText().toString());
+        Init.getClicks().binding.buttonDecimal.setClickable(true);
 
     }
 
-    /**
-     * {@code totalAnswer} handles the call from the equals button, computing the calculation
-     * and displaying the result.
-     * <br>
-     * {@code totalAnswer} calls the numbers from the ArrayList {@code values} and the operators
-     * from the ArrayList {@code operations}, using a switch statement to determine the operation.
-     *
-     * This currently operates left to right of the sum, although I do want to implement the
-     * correct mathematical order of operations later.
-     */
-    void totalAnswer() {
-        // save the number
-        values.add(Integer.parseInt(currentNumber));
-        // complete to sum and display
-        sumToCalculate += "=";
-        updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate);
 
-        // make current answer the first value in values list
-        int currentAnswer = (Integer) values.get(0);
-        // iterate through the operators list
-        for (int i = 0; i < operators.size(); i++) {
-
-            // get the next number in the list to operate on
-            Integer b = (Integer) values.get(i + 1);
-
-            // Determine the operator and sum accordingly
-            switch (operators.get(i)) {
-                case "+":
-                    currentAnswer += b;
-                    break;
-                case "-":
-                    currentAnswer -= b;
-                    break;
-                case "÷":
-                    currentAnswer /= b;
-                    break;
-                case "×":
-                    currentAnswer *= b;
-                    break;
-            }
-        }
-        // get the currentAnswer as a String to display
-        String toReturn = String.valueOf(currentAnswer);
-        updateDisplay(Init.getClicks().binding.calculatorDisplay, toReturn);
-        // make equals button un-clickable until required arguments are met
-        Init.getClicks().binding.buttonEquals.setClickable(false);
-        clearLists();
-        // make both variables equal to the answer
-        sumToCalculate = currentNumber = toReturn;
-    }
 
     /**
-     * {@code clearLists} clears the list and variables stored.
+     * {@code clearLists} clears the list and variables stored, sets isDecimal to false and makes
+     * buttonDecimal clickable
      */
     void clearLists() {
+
         values.clear();
         operators.clear();
         currentNumber = "";
         sumToCalculate = "";
+        Functions.isDecimal = false;
+
+        Init.getClicks().binding.buttonDecimal.setClickable(true);
+    }
+
+    /**
+     * {@code addNumberToList} checks if {@code currentNumber} contains a decimal point, if
+     * so it adds the number as a {@link Double} and sets the boolean {@code isDecimal} to true
+     * (this is the value that controls which method to use in {@link Equate}).
+     * <br>
+     * It also makes a {@link Log} to show which was used for debugging purposes.
+     */
+    void addNumberToList(){
+        if (currentNumber.contains(".")){
+            values.add(Double.parseDouble(currentNumber));
+            isDecimal = true;
+            Log.d("CREATION", "decimal " + currentNumber);
+        } else {
+            values.add(Integer.parseInt(currentNumber));
+            Log.d("CREATION", "non-decimal");
+        }
     }
 
 }

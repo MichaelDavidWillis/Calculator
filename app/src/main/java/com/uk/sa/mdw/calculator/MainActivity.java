@@ -24,7 +24,7 @@ import android.os.Bundle;
 /**
  * {@code MainActivity} class represents a calculator application's main class.
  *
- * @version 0.1
+ * @version 0.2
  * @author Michael David Willis
  */
 public class MainActivity extends AppCompatActivity {

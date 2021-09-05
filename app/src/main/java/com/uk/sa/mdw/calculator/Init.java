@@ -21,16 +21,17 @@ import android.app.Activity;
 import androidx.databinding.DataBindingUtil;
 
 /**
- * {@code Init} class initiates the calculator application, creates the Objects for passing to
- * other classes.
+ * {@code Init} class initiates the calculator application, creates the objects for passing to
+ * other classes. These are made static to ensure only one object of each is used.
  *
- * @version 0.1
+ * @version 0.2
  * @author Michael David Willis
  */
 public class Init {
-    // Objects to pass to classes
+
     static SetClicks clicks = new SetClicks();
     static Functions fun = new Functions();
+    static Equate equate = new Equate();
 
     /**
      * {@code init} sets the binding Object to the buttons of the {@link MainActivity} and calls
@@ -43,18 +44,22 @@ public class Init {
     }
 
     /**
-     * {@code getClicks} returns the {@link SetClicks} object. Made static to ensure only one
-     * object is used.
+     * {@code getClicks} returns the {@link SetClicks} object.
      */
     static SetClicks getClicks(){
         return clicks;
     }
 
     /**
-     * {@code getFun} returns the {@link SetClicks} object.Made static to ensure only one
-     * object is used.
+     * {@code getFun} returns the {@link Functions} object.
      */
     static Functions getFun(){
         return fun;
     }
+
+    /**
+     * {@code getEquate} returns the {@link Equate} object.
+     */
+    static Equate getEquate() { return equate;}
+
 }

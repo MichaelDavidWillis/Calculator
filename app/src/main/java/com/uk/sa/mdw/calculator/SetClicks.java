@@ -30,7 +30,7 @@ import java.util.List;
  * their calls to the {@link Functions} class for handling.
  *
  * @author Michael David Willis
- * @version 0.1
+ * @version 0.2
  */
 public class SetClicks implements UpdateDisplays {
 
@@ -47,10 +47,14 @@ public class SetClicks implements UpdateDisplays {
      * <br>
      * Each numeric is added to an ArrayList, clickableViewsConcat, and then a for loop is used to
      * set the listeners to each in turn.
+     * <br>
+     * The Decimal Button is set, if the current number is not already a decimal number.
+     * <br>
      * The All-Clear button (AC) is also set to clear stored variables and reset the displays.
      */
     void setListeners() {
 
+        // Numeric buttons
         List<View> clickableViewsConcat = new ArrayList<>();
         clickableViewsConcat.add(binding.buttonZero);
         clickableViewsConcat.add(binding.buttonOne);
@@ -65,9 +69,15 @@ public class SetClicks implements UpdateDisplays {
         clickableViewsConcat.add(binding.buttonDecimal);
 
         for (View view : clickableViewsConcat) {
-            // on click run concatToSum method
             view.setOnClickListener(view1 -> Init.getFun().concatToCurrentNumber((Button) view1));
         }
+
+        // Decimal button
+        if (!Init.getFun().currentNumber.contains("."))
+        binding.buttonDecimal.setOnClickListener(view -> {
+            Init.getFun().makeDecimal();
+            view.setClickable(false);
+        });
 
         // AC button functionality
         binding.buttonAllCancel.setOnClickListener(view -> {
@@ -83,27 +93,25 @@ public class SetClicks implements UpdateDisplays {
     /**
      * {@code setOperations} sets the OnClickListeners to currently implemented operational
      * buttons.
-     * <p>
+     * <br>
      * Each is added to an ArrayList, clickableViewOperations, and then a for loop is used to
      * set the listeners to each in turn. Also sets the equals button if conditions are met.
      */
     void setOperations() {
 
-        // 2. Set a operation
-        // Set listeners
+        // Operation buttons
         clickableViewOperations.add(binding.buttonPlus);
         clickableViewOperations.add(binding.buttonMinus);
         clickableViewOperations.add(binding.buttonDivide);
         clickableViewOperations.add(binding.buttonMultiply);
 
         for (View view : clickableViewOperations) {
-            // on click run operation handler
             view.setOnClickListener(view1 -> Init.getFun().operationHandler(view1));
         }
-        // only make equals button available if there's sufficient arguments
+        // Equals button
         if (Init.getFun().values.size() > 1
                 || Init.getFun().values.size() > 0 && Init.getFun().currentNumber.length() > 0) {
-            binding.buttonEquals.setOnClickListener(view -> Init.getFun().totalAnswer());
+            binding.buttonEquals.setOnClickListener(view -> Init.getEquate().totalAnswer());
         }
     }
 }
