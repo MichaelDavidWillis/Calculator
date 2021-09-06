@@ -20,11 +20,15 @@ import android.app.Activity;
 
 import androidx.databinding.DataBindingUtil;
 
+import com.uk.sa.mdw.calculator.calculate.Equate;
+import com.uk.sa.mdw.calculator.calculate.Functions;
+import com.uk.sa.mdw.calculator.clicks.SetClicks;
+
 /**
  * {@code Init} class initiates the calculator application, creates the objects for passing to
  * other classes. These are made static to ensure only one object of each is used.
  *
- * @version 0.2
+ * @version 0.3
  * @author Michael David Willis
  */
 public class Init {
@@ -46,20 +50,20 @@ public class Init {
     /**
      * {@code getClicks} returns the {@link SetClicks} object.
      */
-    static SetClicks getClicks(){
+    public static SetClicks getClicks(){
         return clicks;
     }
 
     /**
      * {@code getFun} returns the {@link Functions} object.
      */
-    static Functions getFun(){
+    public static Functions getFun(){
         return fun;
     }
 
     /**
      * {@code getEquate} returns the {@link Equate} object.
      */
-    static Equate getEquate() { return equate;}
+    public static Equate getEquate() { return equate;}
 
 }

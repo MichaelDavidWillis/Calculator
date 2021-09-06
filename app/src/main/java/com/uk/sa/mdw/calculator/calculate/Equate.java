@@ -14,9 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.uk.sa.mdw.calculator;
+package com.uk.sa.mdw.calculator.calculate;
 
 import android.util.Log;
+
+import com.uk.sa.mdw.calculator.Init;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,7 +26,7 @@ import java.math.RoundingMode;
 /**
  * {@code Equate} class handles calculations of the calculator application.
  *
- * @version 0.2
+ * @version 0.3
  * @author Michael David Willis
  */
 public class Equate {
@@ -35,32 +37,30 @@ public class Equate {
      * Returns a Number from the ArrayList {@code values} from {@link Functions}
      */
     private Number getNumber(int position){
-        return Init.getFun().values.get(position);
+        return Init.getClicks().values.get(position);
     }
 
     /**
-     * {@code totalAnswer} adds the currentNumber to the {@code ArrayList} values and decides
+     * {@code totalAnswer} ae dds the currentNumber to the ArrayList {@code values} and decides
      * whether to use {@code equateDecimal} or {@code equateInteger} based on whether a decimal
-     * number has been entered into the List {@code values}.
+     * number has been entered into the List {@code values} or it is a divide calculation.
      * <br>
      * It also makes a {@link Log} of which was used for debugging purposes.
      */
-    void totalAnswer() {
+    public void totalAnswer() {
         // save the number
         Init.getFun().addNumberToList();
         // complete to sum and display
-        Init.getFun().sumToCalculate += "=";
-        Init.getFun().updateDisplay(Init.getClicks().binding.currentSum, Init.getFun().sumToCalculate);
+        Init.getClicks().sumToCalculate.append("=");
+        Init.getFun().updateDisplay(Init.getClicks().binding.currentSum, Init.getClicks().sumToCalculate.toString());
 
-        // make current answer the first value in values list
-        // Need way to make currentNumber a Integer or a Double
-
+        // Number to store either integer or double value
         Number answer;
-        if (Functions.isDecimal || Init.getFun().operators.contains("÷")) {
-            Log.d("CREATION", "Double");
+        if (Init.getClicks().isDecimal || Init.getClicks().operators.contains("÷")) {
+            Log.d("EQUATION", "Decimal");
             answer = equateDecimal();
         } else {
-            Log.d("CREATION", "Integer");
+            Log.d("EQUATION", "Integer");
             answer = equateInteger();
         }
         finishSum(answer);
@@ -72,23 +72,23 @@ public class Equate {
      * {@code equateInteger} is included in the code to minimize the overkill of using
      * {@code BigDecimal} when not needed.
      * <br>
-     * calls the numbers from the ArrayList {@code values} and the operators
+     * Calls the numbers from the ArrayList {@code values} and the operators
      * from the ArrayList {@code operations}, using a switch statement to determine the operation.
      * <br>
      * This currently operates left to right of the sum, although I do want to implement the
      * correct mathematical order of operations later.
      */
-    Number equateInteger(){
+    public Number equateInteger(){
 
         Integer currentIntAnswer = (Integer) getNumber(0);
         // iterate through the operators list
-        for (int i = 0; i < Init.getFun().operators.size(); i++) {
+        for (int i = 0; i < Init.getClicks().operators.size(); i++) {
 
             // get the next number in the list to operate on
             Integer b = (Integer) getNumber(i + 1);
 
             // Determine the operator and sum accordingly
-            switch (Init.getFun().operators.get(i)) {
+            switch (Init.getClicks().operators.get(i)) {
                 case "+":
                     currentIntAnswer += b;
                     break;
@@ -118,17 +118,17 @@ public class Equate {
      * This currently operates left to right of the sum, although I do want to implement the
      * correct mathematical order of operations later.
      */
-    Number equateDecimal() {
+    public Number equateDecimal() {
 
         BigDecimal currentDecimalAnswer = BigDecimal.valueOf(Double.parseDouble(getNumber(0).toString()));
         // iterate through the operators list
-        for (int i = 0; i < Init.getFun().operators.size(); i++) {
+        for (int i = 0; i < Init.getClicks().operators.size(); i++) {
 
             // get the next number in the list to operate on
             BigDecimal b = BigDecimal.valueOf(Double.parseDouble(getNumber(i + 1).toString()));
 
             // Determine the operator and sum accordingly
-            switch (Init.getFun().operators.get(i)) {
+            switch (Init.getClicks().operators.get(i)) {
                 case "+":
                     currentDecimalAnswer = currentDecimalAnswer.add(b);
                     break;
@@ -163,10 +163,11 @@ public class Equate {
         Init.getFun().clearLists();
 
         // make both variables equal to the answer
-        Init.getFun().sumToCalculate = Init.getFun().currentNumber = toReturn;
+        Init.getClicks().sumToCalculate = new StringBuilder(toReturn);
+        Init.getClicks().currentNumber = toReturn;
 
         // Only make decimalButton clickable if answer is not already a decimal number
-        if (!Init.getFun().currentNumber.contains(".")) {
+        if (!Init.getClicks().currentNumber.contains(".")) {
             Init.getClicks().binding.buttonDecimal.setClickable(true);
         } else {
             Init.getClicks().binding.buttonDecimal.setClickable(false);

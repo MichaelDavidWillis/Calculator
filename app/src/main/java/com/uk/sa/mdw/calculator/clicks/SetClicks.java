@@ -15,46 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.uk.sa.mdw.calculator;
+package com.uk.sa.mdw.calculator.clicks;
 
 import android.view.View;
 import android.widget.Button;
 
-import com.uk.sa.mdw.calculator.databinding.ActivityMainBinding;
+import com.uk.sa.mdw.calculator.calculate.Functions;
+import com.uk.sa.mdw.calculator.Init;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * {@code SetClicks} class sets all buttons to clickable for the calculator application and
- * their calls to the {@link Functions} class for handling.
+ * their calls to the {@link SetClicks} class for handling and
+ * {@link com.uk.sa.mdw.calculator.calculate.Equate} for calculations.
  *
  * @author Michael David Willis
- * @version 0.2
+ * @version 0.3
  */
-public class SetClicks implements UpdateDisplays {
+public class SetClicks extends SpecialClicks {
+
+    public List<View> clickableViewOperations = new ArrayList<>();
 
     /**
-     * {@code binding} defines a {@link ActivityMainBinding} object for storing all buttons for
-     * quicker calling at run-time.
+     * {@code setListeners} sets the OnClickListeners to the decimal button and all numeric
+     * and special buttons.
      */
-    public ActivityMainBinding binding;
+    public void setListeners() {
 
-    List<View> clickableViewOperations = new ArrayList<>();
-
-    /**
-     * {@code setListeners} sets the OnClickListeners to all numerical buttons.
-     * <br>
-     * Each numeric is added to an ArrayList, clickableViewsConcat, and then a for loop is used to
-     * set the listeners to each in turn.
-     * <br>
-     * The Decimal Button is set, if the current number is not already a decimal number.
-     * <br>
-     * The All-Clear button (AC) is also set to clear stored variables and reset the displays.
-     */
-    void setListeners() {
-
-        // Numeric buttons
+        // Numeric buttons - NumericClicks
         List<View> clickableViewsConcat = new ArrayList<>();
         clickableViewsConcat.add(binding.buttonZero);
         clickableViewsConcat.add(binding.buttonOne);
@@ -69,35 +59,36 @@ public class SetClicks implements UpdateDisplays {
         clickableViewsConcat.add(binding.buttonDecimal);
 
         for (View view : clickableViewsConcat) {
-            view.setOnClickListener(view1 -> Init.getFun().concatToCurrentNumber((Button) view1));
+            view.setOnClickListener(view1 -> Init.getClicks().concatToCurrentNumber((Button) view1));
         }
 
-        // Decimal button
-        if (!Init.getFun().currentNumber.contains("."))
+        // Decimal button - OperationClicks
+        if (!Init.getClicks().currentNumber.contains("."))
         binding.buttonDecimal.setOnClickListener(view -> {
-            Init.getFun().makeDecimal();
+            Init.getClicks().makeDecimal();
             view.setClickable(false);
         });
 
-        // AC button functionality
+        // AC button functionality - SpecialClicks
         binding.buttonAllCancel.setOnClickListener(view -> {
-            // clear the lists and variables
-            Init.getFun().clearLists();
-            // update the displays
-            updateDisplay(binding.currentSum, Init.getFun().sumToCalculate);
-            updateDisplay(binding.calculatorDisplay, "");
+            setAC();
+        });
+
+        // Negative Button - SpecialClicks
+        binding.buttonNegative.setOnClickListener(view -> {
+            setNegative();
         });
 
     }
 
     /**
      * {@code setOperations} sets the OnClickListeners to currently implemented operational
-     * buttons.
+     * buttons, except the decimal button, which is implemented in {@code setListeners}
      * <br>
      * Each is added to an ArrayList, clickableViewOperations, and then a for loop is used to
      * set the listeners to each in turn. Also sets the equals button if conditions are met.
      */
-    void setOperations() {
+    public void setOperations() {
 
         // Operation buttons
         clickableViewOperations.add(binding.buttonPlus);
@@ -106,11 +97,11 @@ public class SetClicks implements UpdateDisplays {
         clickableViewOperations.add(binding.buttonMultiply);
 
         for (View view : clickableViewOperations) {
-            view.setOnClickListener(view1 -> Init.getFun().operationHandler(view1));
+            view.setOnClickListener(view1 -> Init.getClicks().operationHandler(view1));
         }
         // Equals button
-        if (Init.getFun().values.size() > 1
-                || Init.getFun().values.size() > 0 && Init.getFun().currentNumber.length() > 0) {
+        if (Init.getClicks().values.size() > 1
+                || Init.getClicks().values.size() > 0 && Init.getClicks().currentNumber.length() > 0) {
             binding.buttonEquals.setOnClickListener(view -> Init.getEquate().totalAnswer());
         }
     }
