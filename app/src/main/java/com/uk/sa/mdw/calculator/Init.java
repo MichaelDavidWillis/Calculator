@@ -28,7 +28,7 @@ import com.uk.sa.mdw.calculator.clicks.SetClicks;
  * {@code Init} class initiates the calculator application, creates the objects for passing to
  * other classes. These are made static to ensure only one object of each is used.
  *
- * @version 0.3
+ * @version 0.4
  * @author Michael David Willis
  */
 public class Init {
@@ -65,5 +65,4 @@ public class Init {
      * {@code getEquate} returns the {@link Equate} object.
      */
     public static Equate getEquate() { return equate;}
-
 }

@@ -22,7 +22,7 @@ import com.uk.sa.mdw.calculator.Init;
  * {@code SpecialClicks} class defines special button click operations of the calculator
  * application.
  *
- * @version 0.3
+ * @version 0.4
  * @author Michael David Willis
  */
 public class SpecialClicks extends OperationClicks {
@@ -33,20 +33,20 @@ public class SpecialClicks extends OperationClicks {
      */
     void setNegative(){
         // find last index of currentNumber
-        int startOfCurrentNumber = Init.getClicks().sumToCalculate.lastIndexOf(Init.getClicks().currentNumber);
+        int startOfCurrentNumber = sumToCalculate.lastIndexOf(holder.currentNumber);
         // check if sumToCalculate is empty or already a negative
-        if (Init.getClicks().currentNumber.length() == 0
-                || Init.getClicks().currentNumber.charAt(0) != '-') {
+        if (holder.currentNumber.length() == 0
+                || holder.currentNumber.charAt(0) != '-') {
             // add "-" to both sumToCalculate & currentNumber
-            Init.getClicks().sumToCalculate.insert(startOfCurrentNumber, "-");
-            Init.getClicks().currentNumber = "-" + Init.getClicks().currentNumber;
+            sumToCalculate.insert(startOfCurrentNumber, "-");
+            holder.currentNumber = "-" + holder.currentNumber;
         } else {
             // take off "-" from both sumToCalculate & currentNumber
-            Init.getClicks().sumToCalculate.delete(startOfCurrentNumber, startOfCurrentNumber + 1);
-            Init.getClicks().currentNumber = Init.getClicks().currentNumber.substring(1);
+            sumToCalculate.delete(startOfCurrentNumber, startOfCurrentNumber + 1);
+            holder.currentNumber = holder.currentNumber.substring(1);
         }
         // update displays
-        updateDisplay(Init.getClicks().binding.currentSum, Init.getClicks().sumToCalculate.toString());
+        updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
     }
 
     /**
@@ -56,7 +56,7 @@ public class SpecialClicks extends OperationClicks {
         // clear the lists and variables
         Init.getFun().clearLists();
         // update the displays
-        updateDisplay(binding.currentSum, Init.getClicks().sumToCalculate.toString());
+        updateDisplay(binding.currentSum, sumToCalculate.toString());
         updateDisplay(binding.calculatorDisplay, "");
     }
 }

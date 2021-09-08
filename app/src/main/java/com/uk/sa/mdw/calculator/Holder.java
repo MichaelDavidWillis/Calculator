@@ -14,31 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.uk.sa.mdw.calculator;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * {@code MainActivity} class represents a calculator application's main class.
+ * {@code Holder} is a simple class to make objects that hold variables that define the
+ * calculation. As a separate class, {@code Holder} objects can be exchanged (or plugged and
+ * unplugged) at anytime to equate calculations inside parentheses.
  *
  * @version 0.4
  * @author Michael David Willis
  */
-public class MainActivity extends AppCompatActivity {
+public class Holder {
 
-    /**
-     * {@code onCreate} creates the app.
-     * <br>
-     * {@code onCreate} creates an {@code Init} object to initiate the calculator app, passing
-     * {@code this} {@link android.app.Activity} for the binding object.
-     */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Init initiate = new Init();
-        initiate.init(this);
-    }
+    // Controls the current number being defined
+    public String currentNumber = "";
+    // List of user defined stored numbers
+    public List<Number> values = new ArrayList<>();
+    // List of user defined stored operators
+    public List<String> operators = new ArrayList<>();
+    // Defines which method to use in Equate
+    public boolean isDecimal;
 }

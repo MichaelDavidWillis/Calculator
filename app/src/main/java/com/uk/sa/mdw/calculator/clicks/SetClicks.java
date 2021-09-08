@@ -20,7 +20,6 @@ package com.uk.sa.mdw.calculator.clicks;
 import android.view.View;
 import android.widget.Button;
 
-import com.uk.sa.mdw.calculator.calculate.Functions;
 import com.uk.sa.mdw.calculator.Init;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import java.util.List;
  * {@link com.uk.sa.mdw.calculator.calculate.Equate} for calculations.
  *
  * @author Michael David Willis
- * @version 0.3
+ * @version 0.4
  */
 public class SetClicks extends SpecialClicks {
 
@@ -62,23 +61,21 @@ public class SetClicks extends SpecialClicks {
             view.setOnClickListener(view1 -> Init.getClicks().concatToCurrentNumber((Button) view1));
         }
 
-        // Decimal button - OperationClicks
-        if (!Init.getClicks().currentNumber.contains("."))
+        // Decimal button - NumericClicks
+        if (!holder.currentNumber.contains("."))
         binding.buttonDecimal.setOnClickListener(view -> {
             Init.getClicks().makeDecimal();
             view.setClickable(false);
         });
 
         // AC button functionality - SpecialClicks
-        binding.buttonAllCancel.setOnClickListener(view -> {
-            setAC();
-        });
+        binding.buttonAllCancel.setOnClickListener(view -> setAC());
 
         // Negative Button - SpecialClicks
-        binding.buttonNegative.setOnClickListener(view -> {
-            setNegative();
-        });
+        binding.buttonNegative.setOnClickListener(view -> setNegative());
 
+        // Parentheses Button - NumericClicks
+        binding.buttonParentheses.setOnClickListener(view -> parentheses());
     }
 
     /**
@@ -100,9 +97,38 @@ public class SetClicks extends SpecialClicks {
             view.setOnClickListener(view1 -> Init.getClicks().operationHandler(view1));
         }
         // Equals button
-        if (Init.getClicks().values.size() > 1
-                || Init.getClicks().values.size() > 0 && Init.getClicks().currentNumber.length() > 0) {
-            binding.buttonEquals.setOnClickListener(view -> Init.getEquate().totalAnswer());
+        if (holder.values.size() > 1
+                || holder.values.size() > 0 && holder.currentNumber.length() > 0) {
+            binding.buttonEquals.setOnClickListener(view -> {
+                Init.getFun().addNumberToList(holder);
+                Init.getEquate().totalAnswer();
+            });
+        }
+    }
+
+    /**
+     * {@code decideParenthesesButton} is a method, called from {@link NumericClicks}
+     * {@code concatToNumber} which decides whether or not to make the parentheses button
+     * available to the user based on the user's input so far.
+     */
+    public void decideParenthesesButton(){
+        // make parentheses unclickable if
+        // - a parentheses is opened and an operator has yet to be entered
+        // - if the last character in sumToCalculate is a number
+        // - if there is no parentheses open and the last character in sumToCalculate is a number
+
+        if (parenthesesOpen > 0                                     // parentheses is open
+                && holder.operators.size() == 0                     // and no operators and
+                && holder.operators.size() == holder.values.size()  // operators & values same size
+                || sumToCalculate.charAt(sumToCalculate.length() - 1) > 48 // or last char in sum
+                && sumToCalculate.charAt(sumToCalculate.length() - 1) < 57 // is between 0 & 9 and
+                && holder.operators.size() < holder.values.size()   // more values than operators
+                || parenthesesOpen == 0                                    // or parentheses closed
+                && sumToCalculate.charAt(sumToCalculate.length() - 1) > 48 // and last char in sum
+                && sumToCalculate.charAt(sumToCalculate.length() - 1) < 57){ // is between 0 & 9
+            binding.buttonParentheses.setClickable(false);
+        } else {
+            binding.buttonParentheses.setClickable(true);
         }
     }
 }

@@ -23,7 +23,7 @@ import android.widget.TextView;
  * made to clearly show in code when something is being displayed.
  *
  * @author Michael David Willis
- * @version 0.3
+ * @version 0.4
  */
 public interface UpdateDisplays{
 

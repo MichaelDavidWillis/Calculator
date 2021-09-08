@@ -18,6 +18,7 @@ package com.uk.sa.mdw.calculator.calculate;
 
 import android.util.Log;
 
+import com.uk.sa.mdw.calculator.Holder;
 import com.uk.sa.mdw.calculator.Init;
 import com.uk.sa.mdw.calculator.UpdateDisplays;
 import com.uk.sa.mdw.calculator.clicks.NumericClicks;
@@ -25,7 +26,7 @@ import com.uk.sa.mdw.calculator.clicks.NumericClicks;
 /**
  * {@code Functions} class handles common functionalities of the calculator application.
  *
- * @version 0.3
+ * @version 0.4
  * @author Michael David Willis
  */
 
@@ -33,17 +34,22 @@ public class Functions implements UpdateDisplays {
 
     /**
      * {@code clearLists} clears the list and variables stored, sets isDecimal to false and makes
-     * buttonDecimal clickable
+     * buttonDecimal and buttonParentheses clickable
      */
     public void clearLists() {
 
-        Init.getClicks().values.clear();
-        Init.getClicks().operators.clear();
-        Init.getClicks().currentNumber = "";
+        // Clear Holders
+        Init.getClicks().holders.clear();
+        Init.getClicks().holder = new Holder();
+        // Clear parentheses counter
+        Init.getClicks().parenthesesOpen = 0;
+        // Clear display
         Init.getClicks().sumToCalculate = new StringBuilder();
-        NumericClicks.isDecimal = false;
 
+        // Reset Decimal Button
         Init.getClicks().binding.buttonDecimal.setClickable(true);
+        // Reset Parentheses Button
+        Init.getClicks().binding.buttonParentheses.setClickable(true);
     }
 
     /**
@@ -53,13 +59,13 @@ public class Functions implements UpdateDisplays {
      * <br>
      * It also makes a {@link Log} to show which was used for debugging purposes.
      */
-    public void addNumberToList(){
-        if (Init.getClicks().currentNumber.contains(".")){
-            Init.getClicks().values.add(Double.parseDouble(Init.getClicks().currentNumber));
-            NumericClicks.isDecimal = true;
-            Log.d("CREATION", "decimal " + Init.getClicks().currentNumber);
+    public void addNumberToList(Holder holder){
+        if (holder.currentNumber.contains(".")){
+            holder.values.add(Double.parseDouble(holder.currentNumber));
+            holder.isDecimal = true;
+            Log.d("CREATION", "decimal " + holder.currentNumber);
         } else {
-            Init.getClicks().values.add(Integer.parseInt(Init.getClicks().currentNumber));
+            holder.values.add(Integer.parseInt(holder.currentNumber));
             Log.d("CREATION", "non-decimal");
         }
     }

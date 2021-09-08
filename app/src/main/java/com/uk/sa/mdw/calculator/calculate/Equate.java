@@ -18,18 +18,22 @@ package com.uk.sa.mdw.calculator.calculate;
 
 import android.util.Log;
 
+import com.uk.sa.mdw.calculator.Holder;
 import com.uk.sa.mdw.calculator.Init;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * {@code Equate} class handles calculations of the calculator application.
+ * {@code Equate} class handles the calculations of the calculator application.
  *
- * @version 0.3
+ * @version 0.4
  * @author Michael David Willis
  */
 public class Equate {
+
+    // To easily reference the current Holder object passed from the totalAnswer call
+    public Holder holder = Init.getClicks().holder;
 
     /**
      * {@code getNumber} is a simple method made to make code more readable.
@@ -37,33 +41,42 @@ public class Equate {
      * Returns a Number from the ArrayList {@code values} from {@link Functions}
      */
     private Number getNumber(int position){
-        return Init.getClicks().values.get(position);
+        // Ensure this holder is pointing at the current holder in the Clicks object
+        holder = Init.getClicks().holder;
+        return holder.values.get(position);
     }
 
     /**
-     * {@code totalAnswer} ae dds the currentNumber to the ArrayList {@code values} and decides
+     * {@code totalAnswer} adds the currentNumber to the ArrayList {@code values} and decides
      * whether to use {@code equateDecimal} or {@code equateInteger} based on whether a decimal
-     * number has been entered into the List {@code values} or it is a divide calculation.
+     * number has been entered into the List {@code values} or it is a divide calculation and
+     * how to handle closing parentheses
      * <br>
      * It also makes a {@link Log} of which was used for debugging purposes.
      */
     public void totalAnswer() {
-        // save the number
-        Init.getFun().addNumberToList();
         // complete to sum and display
         Init.getClicks().sumToCalculate.append("=");
         Init.getFun().updateDisplay(Init.getClicks().binding.currentSum, Init.getClicks().sumToCalculate.toString());
 
         // Number to store either integer or double value
         Number answer;
-        if (Init.getClicks().isDecimal || Init.getClicks().operators.contains("÷")) {
+        if (holder.isDecimal || holder.operators.contains("÷")) {
             Log.d("EQUATION", "Decimal");
             answer = equateDecimal();
         } else {
             Log.d("EQUATION", "Integer");
             answer = equateInteger();
         }
-        finishSum(answer);
+
+        // How to handle holders of parentheses calculations
+        if (Init.getClicks().parenthesesOpen == 0) {
+            finishSum(answer);
+            Init.getClicks().binding.buttonParentheses.setClickable(false);
+        } else {
+            Log.d("EQUATION", answer.toString());
+            Init.getClicks().closeParentheses(answer.toString());
+        }
     }
 
     /**
@@ -82,13 +95,13 @@ public class Equate {
 
         Integer currentIntAnswer = (Integer) getNumber(0);
         // iterate through the operators list
-        for (int i = 0; i < Init.getClicks().operators.size(); i++) {
+        for (int i = 0; i < holder.operators.size(); i++) {
 
             // get the next number in the list to operate on
             Integer b = (Integer) getNumber(i + 1);
 
             // Determine the operator and sum accordingly
-            switch (Init.getClicks().operators.get(i)) {
+            switch (holder.operators.get(i)) {
                 case "+":
                     currentIntAnswer += b;
                     break;
@@ -122,13 +135,13 @@ public class Equate {
 
         BigDecimal currentDecimalAnswer = BigDecimal.valueOf(Double.parseDouble(getNumber(0).toString()));
         // iterate through the operators list
-        for (int i = 0; i < Init.getClicks().operators.size(); i++) {
+        for (int i = 0; i < holder.operators.size(); i++) {
 
             // get the next number in the list to operate on
             BigDecimal b = BigDecimal.valueOf(Double.parseDouble(getNumber(i + 1).toString()));
 
             // Determine the operator and sum accordingly
-            switch (Init.getClicks().operators.get(i)) {
+            switch (holder.operators.get(i)) {
                 case "+":
                     currentDecimalAnswer = currentDecimalAnswer.add(b);
                     break;
@@ -164,14 +177,10 @@ public class Equate {
 
         // make both variables equal to the answer
         Init.getClicks().sumToCalculate = new StringBuilder(toReturn);
-        Init.getClicks().currentNumber = toReturn;
+        Init.getClicks().holder.currentNumber = toReturn;
 
         // Only make decimalButton clickable if answer is not already a decimal number
-        if (!Init.getClicks().currentNumber.contains(".")) {
-            Init.getClicks().binding.buttonDecimal.setClickable(true);
-        } else {
-            Init.getClicks().binding.buttonDecimal.setClickable(false);
-        }
+        Init.getClicks().binding.buttonDecimal.setClickable(!holder.currentNumber.contains("."));
     }
 
 }

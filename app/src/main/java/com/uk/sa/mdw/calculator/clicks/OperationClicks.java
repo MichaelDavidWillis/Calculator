@@ -16,7 +16,6 @@
  */
 package com.uk.sa.mdw.calculator.clicks;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,29 +25,10 @@ import com.uk.sa.mdw.calculator.Init;
  * {@code OperationClicks} class defines operational button click operations of the calculator
  * application.
  *
- * @version 0.3
+ * @version 0.4
  * @author Michael David Willis
  */
 public class OperationClicks extends NumericClicks {
-    /**
-     * {@code makeDecimal} checks if {@code currentNumber} is empty, adding "0." if so or "."
-     * if not to both {@code sumToCalculate} and {@code currentNumber} and updates the display.
-     */
-    public void makeDecimal() {
-        // add digit to number
-        if (currentNumber.length() == 0){
-            sumToCalculate.append("0.");
-            currentNumber += "0.";
-            Log.d("CREATION", "length 0");
-        }
-        else {
-            sumToCalculate.append(".");
-            currentNumber += ".";
-            Log.d("CREATION", "length > 0");
-        }
-        // display the sum so far in sumDisplay
-        updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
-    }
 
     /**
      * Once a new number has been set and stored by pressing a operational button,
@@ -62,10 +42,10 @@ public class OperationClicks extends NumericClicks {
      */
     public void operationHandler(View view) {
         // save the number
-        Init.getFun().addNumberToList();
+        Init.getFun().addNumberToList(holder);
 
         // clear currentNumber to save the next number
-        currentNumber = "";
+        holder.currentNumber = "";
         // add the operator symbol to the display
         sumToCalculate.append(((Button) view).getText().toString());
         updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
@@ -74,9 +54,10 @@ public class OperationClicks extends NumericClicks {
             view1.setClickable(false);
         }
         // add operator to the list of operators
-        operators.add(((Button) view).getText().toString());
+        holder.operators.add(((Button) view).getText().toString());
         // make decimal button clickable
         Init.getClicks().binding.buttonDecimal.setClickable(true);
+        Init.getClicks().binding.buttonParentheses.setClickable(true);
 
     }
 }

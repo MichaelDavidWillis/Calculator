@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Testing for each of the implemented operations in both integer & decimal calculations.
  *
- * @version 0.3
+ * @version 0.4
  * @author Michael David Willis
  */
 public class CalculationTests {
@@ -35,101 +35,109 @@ public class CalculationTests {
     @Test
     public void integerAdditionIsCorrect() {
 
-        Init.getClicks().values.add(a);
-        Init.getClicks().values.add(b);
-        Init.getClicks().operators.add("+");
+        Init.getClicks().holder.values.add(a);
+        Init.getClicks().holder.values.add(b);
+        Init.getClicks().holder.operators.add("+");
 
-        assertEquals("Addition Integer",7, Init.getEquate().equateInteger());
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals("Addition Integer",7,
+                Init.getEquate().equateInteger());
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
     @Test
     public void integerSubtractionIsCorrect() {
 
-        Init.getClicks().values.add(a);
-        Init.getClicks().values.add(b);
-        Init.getClicks().operators.add("-");
+        Init.getClicks().holder.values.add(a);
+        Init.getClicks().holder.values.add(b);
+        Init.getClicks().holder.operators.add("-");
 
-        assertEquals("Subtraction Integer",3, Init.getEquate().equateInteger());
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals("Subtraction Integer",3,
+                Init.getEquate().equateInteger());
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
     @Test
     public void integerDivideIsCorrect() {
 
-        Init.getClicks().values.add(a);
-        Init.getClicks().values.add(b);
-        Init.getClicks().operators.add("÷");
+        Init.getClicks().holder.values.add(a);
+        Init.getClicks().holder.values.add(b);
+        Init.getClicks().holder.operators.add("÷");
 
-        assertEquals(2.5, Double.parseDouble(Init.getEquate().equateDecimal().toString()), 7);
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals(2.5,
+                Double.parseDouble(Init.getEquate().equateDecimal().toString()),7);
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
     @Test
     public void integerMultiplyIsCorrect() {
 
-        Init.getClicks().values.add(a);
-        Init.getClicks().values.add(b);
-        Init.getClicks().operators.add("×");
+        Init.getClicks().holder.values.add(a);
+        Init.getClicks().holder.values.add(b);
+        Init.getClicks().holder.operators.add("×");
 
-        assertEquals("Multiply Integer",10, Init.getEquate().equateInteger());
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals("Multiply Integer",10,
+                Init.getEquate().equateInteger());
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
 
     @Test
     public void decimalAdditionIsCorrect() {
 
-        Init.getClicks().values.add(c);
-        assertEquals(Init.getClicks().values.get(0), c);
-        Init.getClicks().values.add(d);
-        assertEquals(Init.getClicks().values.get(1), d);
-        Init.getClicks().operators.add("+");
+        Init.getClicks().holder.values.add(c);
+        assertEquals(Init.getClicks().holder.values.get(0), c);
+        Init.getClicks().holder.values.add(d);
+        assertEquals(Init.getClicks().holder.values.get(1), d);
+        Init.getClicks().holder.operators.add("+");
 
-        assertEquals(4.9, Double.parseDouble(Init.getEquate().equateDecimal().toString()), 7);
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals(4.9,
+                Double.parseDouble(Init.getEquate().equateDecimal().toString()),7);
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
 
     @Test
     public void decimalSubtractionIsCorrect() {
 
-        Init.getClicks().values.add(c);
-        assertEquals(Init.getClicks().values.get(0), c);
-        Init.getClicks().values.add(d);
-        assertEquals(Init.getClicks().values.get(1), d);
-        Init.getClicks().operators.add("-");
+        Init.getClicks().holder.values.add(c);
+        assertEquals(Init.getEquate().holder.values.get(0), c);
+        Init.getClicks().holder.values.add(d);
+        assertEquals(Init.getEquate().holder.values.get(1), d);
+        Init.getClicks().holder.operators.add("-");
 
-        assertEquals(1.7, Double.parseDouble(Init.getEquate().equateDecimal().toString()), 7);
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals(1.7,
+                Double.parseDouble(Init.getEquate().equateDecimal().toString()),7);
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
 
     @Test
     public void decimalDivideIsCorrect() {
 
-        Init.getClicks().values.add(c);
-        assertEquals(Init.getClicks().values.get(0), c);
-        Init.getClicks().values.add(d);
-        assertEquals(Init.getClicks().values.get(1), d);
-        Init.getClicks().operators.add("÷");
+        Init.getClicks().holder.values.add(c);
+        assertEquals(Init.getEquate().holder.values.get(0), c);
+        Init.getClicks().holder.values.add(d);
+        assertEquals(Init.getEquate().holder.values.get(1), d);
+        Init.getClicks().holder.operators.add("÷");
 
-        assertEquals(2.0625, Double.parseDouble(Init.getEquate().equateDecimal().toString()), 7);
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals(2.0625,
+                Double.parseDouble(Init.getEquate().equateDecimal().toString()),7);
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
 
     @Test
     public void decimalMultiplyIsCorrect() {
 
-        Init.getClicks().values.add(c);
-        assertEquals(Init.getClicks().values.get(0), c);
-        Init.getClicks().values.add(d);
-        assertEquals(Init.getClicks().values.get(1), d);
-        Init.getClicks().operators.add("×");
+        Init.getClicks().holder.values.add(c);
+        assertEquals(Init.getEquate().holder.values.get(0), c);
+        Init.getClicks().holder.values.add(d);
+        assertEquals(Init.getEquate().holder.values.get(1), d);
+        Init.getClicks().holder.operators.add("×");
 
-        assertEquals(5.28, Double.parseDouble(Init.getEquate().equateDecimal().toString()), 7);
-        Init.getClicks().operators.clear();
-        Init.getClicks().values.clear();
+        assertEquals(5.28,
+                Double.parseDouble(Init.getEquate().equateDecimal().toString()),7);
+        Init.getClicks().holder.values.clear();
+        Init.getClicks().holder.operators.clear();
     }
 }

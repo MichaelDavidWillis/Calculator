@@ -16,42 +16,20 @@
  */
 package com.uk.sa.mdw.calculator.clicks;
 
+import android.util.Log;
 import android.widget.Button;
 
+import com.uk.sa.mdw.calculator.Holder;
 import com.uk.sa.mdw.calculator.Init;
-import com.uk.sa.mdw.calculator.UpdateDisplays;
-import com.uk.sa.mdw.calculator.databinding.ActivityMainBinding;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@code NumericClicks} class defines numerical button click operations of the calculator
- * application. As the base class of {@link SetClicks}, all variables are created here to
- * ensure they exist before any buttons are assigned.
+ * application.
  *
- * @version 0.3
+ * @version 0.4
  * @author Michael David Willis
  */
-public class NumericClicks implements UpdateDisplays {
-
-    // Controls the total sum displayed
-    public StringBuilder sumToCalculate = new StringBuilder("");
-    // Controls the current number being defined
-    public String currentNumber = "";
-    // List of user defined stored numbers
-    public List<Number> values = new ArrayList<>();
-    // List of user defined stored operators
-    public List<String> operators = new ArrayList<>();
-    // Defines which method to use in Equate
-    public static boolean isDecimal;
-
-    /**
-     * {@code binding} defines a {@link ActivityMainBinding} object for storing all buttons for
-     * quicker calling at run-time.
-     */
-    public ActivityMainBinding binding;
-
+public class NumericClicks extends ClicksBase{
     /**
      * {@code concatToSum} concatenates the digit represented buttonPressed to both sumToCalculate
      * (variable that stores the full calculation to display) and currentNumber (variable used to
@@ -63,10 +41,103 @@ public class NumericClicks implements UpdateDisplays {
     public void concatToCurrentNumber(Button buttonPressed) {
         // add digit to number
         sumToCalculate.append(buttonPressed.getText().toString());
-        currentNumber += buttonPressed.getText().toString();
+        holder.currentNumber += buttonPressed.getText().toString();
         // display the sum so far
         updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
+        // decide to allow parentheses button to be clickable
+        Init.getClicks().decideParenthesesButton();
         // set listeners on the operational buttons
         Init.getClicks().setOperations();
+    }
+
+    /**
+     * {@code makeDecimal} checks if {@code currentNumber} is empty, adding "0." if so or "."
+     * if not to both {@code sumToCalculate} and {@code currentNumber} and updates the display.
+     */
+    public void makeDecimal() {
+        // add digit to number
+        if (holder.currentNumber.length() == 0){
+            sumToCalculate.append("0.");
+            holder.currentNumber += "0.";
+            Log.d("CREATION", "length 0");
+        }
+        else {
+            sumToCalculate.append(".");
+            holder.currentNumber += ".";
+            Log.d("CREATION", "length > 0");
+        }
+        // display the sum so far in sumDisplay
+        updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
+
+        // make parentheses unclickable
+        binding.buttonParentheses.setClickable(false);
+    }
+
+    /**
+     * {@code parentheses} decides which method to call when parentheses button is pressed,
+     * {@code openParentheses} to open a new parentheses or {@code closeParentheses} to close
+     * the current parentheses.
+     */
+    public void parentheses(){
+        if (parenthesesOpen == 0                                    // counter is empty or
+                || holder.values.size() == holder.operators.size()  // equal values and operators
+                && holder.currentNumber.length() == 0){             // and currentNumber is empty
+            openParentheses();
+            binding.buttonEquals.setClickable(false);
+            Log.d("PARENTHESES", "Open");
+        } else {
+            // Add currentNumber to the Holder ArrayList values
+            Init.getFun().addNumberToList(holder);
+            // Total Answer
+            Init.getEquate().totalAnswer();
+            Log.d("PARENTHESES", "Closed");
+        }
+    }
+
+    /**
+     * {@code openParentheses} handles opening parentheses, making and plugging in a new
+     * {@link Holder} object for the new calculation. Each previous {@link Holder} is saved
+     * in the ArrayList {@code holders}.
+     */
+    public void openParentheses() {
+        // Add open parentheses to display
+        sumToCalculate.append("(");
+        // Send current Holder to be stored in ArrayList holders
+        holders.add(holder);
+        // make a new Holder
+        holder = new Holder();
+        // Increment parentheses counter
+        parenthesesOpen++;
+        // Update display
+        updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
+    }
+
+    /**
+     * {@code closeParentheses} handles the closing of parentheses, equating the answer of
+     * the parenthesized calculation and adding it to the correct {@link Holder} from the
+     * ArrayList {@code holders}.
+     */
+    public void closeParentheses(String answer) {
+        // Get rid of = symbol added by totalAnswer
+        sumToCalculate.replace(sumToCalculate.length() - 1, sumToCalculate.length(), ")");
+        // Decrement parentheses counter
+        parenthesesOpen--;
+        // get previous Holder to be stored in ArrayList holders
+        holder = holders.get(parenthesesOpen);
+        // remove that Holder from the ArrayList holders
+        holders.remove(parenthesesOpen);
+        // make Holder's currentNumber equal the answer of previous Holder
+        holder.currentNumber = answer;
+        // Update display
+        updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
+        // check to set buttons
+        if(parenthesesOpen == 0){
+            binding.buttonEquals.setClickable(true);
+        }
+        if(parenthesesOpen > 0) {
+            binding.buttonParentheses.setClickable(true);
+        } else {
+            binding.buttonParentheses.setClickable(false);
+        }
     }
 }
