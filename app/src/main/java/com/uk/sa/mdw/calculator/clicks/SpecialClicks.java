@@ -16,13 +16,19 @@
  */
 package com.uk.sa.mdw.calculator.clicks;
 
-import com.uk.sa.mdw.calculator.Init;
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+
+import com.uk.sa.mdw.calculator.state.Init;
+import com.uk.sa.mdw.calculator.state.PercentageHolder;
 
 /**
  * {@code SpecialClicks} class defines special button click operations of the calculator
  * application.
  *
- * @version 0.4
+ * @version 0.5
  * @author Michael David Willis
  */
 public class SpecialClicks extends OperationClicks {
@@ -58,6 +64,76 @@ public class SpecialClicks extends OperationClicks {
         // update the displays
         updateDisplay(binding.currentSum, sumToCalculate.toString());
         updateDisplay(binding.calculatorDisplay, "");
+    }
+
+    /**
+     * {@code setSquare} multiplies the currentNumber by itself.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    void setSquare(){
+        // Add ² to sumToCalculate and display
+        sumToCalculate.append("²");
+        updateDisplay(binding.currentSum, sumToCalculate.toString());
+        // add currentNumber to values
+        Init.getFun().addNumberToList(holder);
+        // add "×" to operators
+        holder.operators.add("×");
+    }
+
+    /**
+     * {@code setRoot} finds the root of the {@link com.uk.sa.mdw.calculator.state.Holder}'s
+     * {@code currentNumber}
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    void setRoot(){
+        int sumLength = sumToCalculate.length();
+        sumToCalculate.delete( sumLength - holder.currentNumber.length(), sumLength);
+        // find square root of currentNumber
+        double rt = Math.sqrt(Double.parseDouble(holder.currentNumber));
+        holder.currentNumber = Double.toString(rt);
+        sumToCalculate.append(holder.currentNumber);
+        Init.getFun().addNumberToList(holder);
+        updateDisplay(binding.currentSum, sumToCalculate.toString());
+    }
+
+    /**
+     * {@code setPercentage} finds the percent given of the next number entered by the user.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setPercentage(){
+        // change to a new holder
+        PercentageHolder newHolder = new PercentageHolder();
+        newHolder.values.add(0, Double.parseDouble(holder.currentNumber));
+        newHolder.operators.add("×");
+        holder.currentNumber = "";
+        holders.addLast(holder);
+        Log.d("HOLDER CREATION", "" + holders.size());
+        holder = newHolder;
+        // sumToDisplay becomes "currentNumber% of "
+        sumToCalculate.append(holder.currentNumber).append("% of ");
+        updateDisplay(binding.currentSum, sumToCalculate.toString());
+    }
+
+    /**
+     * {@code setMemoryStore} saves the {@link com.uk.sa.mdw.calculator.state.Holder}'s current
+     * number to the {@link ClicksBase}'s variable {@code storedNumber} to recall at any time.
+     */
+    void setMemoryStore(){
+        // save currentNumber to memory
+        storedNumber = holder.currentNumber;
+    }
+
+    /**
+     * {@code setMemoryRecall} recalls the storedNumber from the {@link ClicksBase} object and
+     * sets it to the current {@link com.uk.sa.mdw.calculator.state.Holder}'s
+     * {@code currentNumber}.
+     */
+    void setMemoryRecall(){
+        // make currentNumber equal to the number saved in memory
+        holder.currentNumber += storedNumber;
+        sumToCalculate.append(storedNumber);
+        // update the displays
+        updateDisplay(binding.currentSum, sumToCalculate.toString());
     }
 }
 

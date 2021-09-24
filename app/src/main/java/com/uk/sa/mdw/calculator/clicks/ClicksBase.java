@@ -16,19 +16,18 @@
  */
 package com.uk.sa.mdw.calculator.clicks;
 
-import com.uk.sa.mdw.calculator.Holder;
-import com.uk.sa.mdw.calculator.Init;
-import com.uk.sa.mdw.calculator.UpdateDisplays;
+import com.uk.sa.mdw.calculator.state.Holder;
+import com.uk.sa.mdw.calculator.state.UpdateDisplays;
 import com.uk.sa.mdw.calculator.databinding.ActivityMainBinding;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * {@code ClicksBase} object holds the variables needed for displaying and storing data
  * needed for calculator functions.
  *
- * @version 0.4
+ * @version 0.5
  * @author Michael David Willis
  */
 public class ClicksBase implements UpdateDisplays {
@@ -46,10 +45,12 @@ public class ClicksBase implements UpdateDisplays {
     public int parenthesesOpen = 0;
 
     // For storing unplugged Holders
-    public List<Holder> holders = new ArrayList<>();
+    public Deque<Holder> holders = new ArrayDeque<>();
 
     // Set starter Holder to holder
     public Holder holder = new Holder();
+
+    public String storedNumber;
 
 
 }

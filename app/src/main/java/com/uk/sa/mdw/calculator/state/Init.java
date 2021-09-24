@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.uk.sa.mdw.calculator;
+package com.uk.sa.mdw.calculator.state;
 
 import android.app.Activity;
 
 import androidx.databinding.DataBindingUtil;
 
+import com.uk.sa.mdw.calculator.MainActivity;
+import com.uk.sa.mdw.calculator.R;
 import com.uk.sa.mdw.calculator.calculate.Equate;
 import com.uk.sa.mdw.calculator.calculate.Functions;
 import com.uk.sa.mdw.calculator.clicks.SetClicks;
@@ -41,10 +43,10 @@ public class Init {
      * {@code init} sets the binding Object to the buttons of the {@link MainActivity} and calls
      * {@link SetClicks} {@code setListeners} to set the buttons to be clickable.
      */
-    void init(Activity activity){
+    public void init(Activity activity){
 
         clicks.binding = DataBindingUtil.setContentView(activity, R.layout.activity_main);
-        clicks.setListeners();
+        clicks.setNumerics();
     }
 
     /**

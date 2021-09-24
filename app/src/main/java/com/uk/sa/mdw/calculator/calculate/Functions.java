@@ -16,17 +16,19 @@
  */
 package com.uk.sa.mdw.calculator.calculate;
 
+import android.os.Build;
 import android.util.Log;
 
-import com.uk.sa.mdw.calculator.Holder;
-import com.uk.sa.mdw.calculator.Init;
-import com.uk.sa.mdw.calculator.UpdateDisplays;
-import com.uk.sa.mdw.calculator.clicks.NumericClicks;
+import androidx.annotation.RequiresApi;
+
+import com.uk.sa.mdw.calculator.state.Holder;
+import com.uk.sa.mdw.calculator.state.Init;
+import com.uk.sa.mdw.calculator.state.UpdateDisplays;
 
 /**
  * {@code Functions} class handles common functionalities of the calculator application.
  *
- * @version 0.4
+ * @version 0.5
  * @author Michael David Willis
  */
 
@@ -59,14 +61,22 @@ public class Functions implements UpdateDisplays {
      * <br>
      * It also makes a {@link Log} to show which was used for debugging purposes.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void addNumberToList(Holder holder){
         if (holder.currentNumber.contains(".")){
             holder.values.add(Double.parseDouble(holder.currentNumber));
             holder.isDecimal = true;
             Log.d("CREATION", "decimal " + holder.currentNumber);
         } else {
-            holder.values.add(Integer.parseInt(holder.currentNumber));
-            Log.d("CREATION", "non-decimal");
+            try {
+                Math.toIntExact(Long.parseLong(holder.currentNumber));
+                holder.values.add(Integer.parseInt(holder.currentNumber));
+                Log.d("CREATION", "non-decimal " + holder.currentNumber);
+            } catch (ArithmeticException e){
+                holder.values.add(Double.parseDouble(holder.currentNumber));
+                holder.isDecimal = true;
+                Log.d("CREATION", "decimal " + holder.currentNumber);
+            }
         }
     }
 

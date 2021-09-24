@@ -5,7 +5,12 @@
     <string name="button_blank_text">Button</string>
     <string name="button_ac_text">AC</string>
     <string name="button_negative_text">-/+</string>
+    <string name="button_memory_store_text">MS</string>
+    <string name="button_memory_recall_text">MR</string>
+    <string name="button_square_text">x²</string>
+    <string name="button_square_root_text">√</string>
     <string name="button_percent_text">%</string>
+
 
     <!-- Numeric Strings -->
     <string name="button_zero_text">0</string>

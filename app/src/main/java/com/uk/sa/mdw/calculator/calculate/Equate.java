@@ -16,10 +16,14 @@
  */
 package com.uk.sa.mdw.calculator.calculate;
 
+import android.os.Build;
 import android.util.Log;
 
-import com.uk.sa.mdw.calculator.Holder;
-import com.uk.sa.mdw.calculator.Init;
+import androidx.annotation.RequiresApi;
+
+import com.uk.sa.mdw.calculator.state.Holder;
+import com.uk.sa.mdw.calculator.state.Init;
+import com.uk.sa.mdw.calculator.state.PercentageHolder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,13 +31,12 @@ import java.math.RoundingMode;
 /**
  * {@code Equate} class handles the calculations of the calculator application.
  *
- * @version 0.4
+ * @version 0.5
  * @author Michael David Willis
  */
 public class Equate {
 
-    // To easily reference the current Holder object passed from the totalAnswer call
-    public Holder holder = Init.getClicks().holder;
+    public Holder holder;
 
     /**
      * {@code getNumber} is a simple method made to make code more readable.
@@ -54,7 +57,10 @@ public class Equate {
      * <br>
      * It also makes a {@link Log} of which was used for debugging purposes.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void totalAnswer() {
+        // Ensure this holder is pointing at the current holder in the Clicks object
+        holder = Init.getClicks().holder;
         // complete to sum and display
         Init.getClicks().sumToCalculate.append("=");
         Init.getFun().updateDisplay(Init.getClicks().binding.currentSum, Init.getClicks().sumToCalculate.toString());
@@ -67,6 +73,10 @@ public class Equate {
         } else {
             Log.d("EQUATION", "Integer");
             answer = equateInteger();
+        }
+
+        if (answer.toString().contains("E") || answer.toString().endsWith(".0")){
+            answer = answer.intValue();
         }
 
         // How to handle holders of parentheses calculations
@@ -91,7 +101,10 @@ public class Equate {
      * This currently operates left to right of the sum, although I do want to implement the
      * correct mathematical order of operations later.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Number equateInteger(){
+        // Ensure this holder is pointing at the current holder in the Clicks object
+        holder = Init.getClicks().holder;
 
         Integer currentIntAnswer = (Integer) getNumber(0);
         // iterate through the operators list
@@ -103,16 +116,43 @@ public class Equate {
             // Determine the operator and sum accordingly
             switch (holder.operators.get(i)) {
                 case "+":
-                    currentIntAnswer += b;
+                    try {
+                        Math.addExact(currentIntAnswer, b);
+                        currentIntAnswer += b;
+                    } catch (ArithmeticException e){
+                        String eMessage = "Exceeds limit";
+                        Init.getClicks().updateDisplay(Init.getClicks().binding.calculatorDisplay,
+                                eMessage);
+                    }
                     break;
                 case "-":
-                    currentIntAnswer -= b;
+                    try {
+                        Math.subtractExact(currentIntAnswer, b);
+                        currentIntAnswer -= b;
+                    } catch (ArithmeticException e){
+                        String eMessage = "Exceeds limit";
+                        Init.getClicks().updateDisplay(Init.getClicks().binding.calculatorDisplay,
+                                eMessage);
+                    }
                     break;
                 case "÷":
-                    currentIntAnswer /= b;
+                    try {
+                        currentIntAnswer /= b;
+                    } catch (ArithmeticException e){
+                        String eMessage = "Cannot divide by 0";
+                        Init.getClicks().updateDisplay(Init.getClicks().binding.calculatorDisplay,
+                                eMessage);
+                    }
                     break;
                 case "×":
-                    currentIntAnswer *= b;
+                    try {
+                        Math.multiplyExact(currentIntAnswer, b);
+                        currentIntAnswer *= b;
+                    } catch (ArithmeticException e){
+                        String eMessage = "Exceeds limit";
+                        Init.getClicks().updateDisplay(Init.getClicks().binding.calculatorDisplay,
+                                eMessage);
+                    }
                     break;
             }
         }
@@ -132,6 +172,8 @@ public class Equate {
      * correct mathematical order of operations later.
      */
     public Number equateDecimal() {
+        // Ensure this holder is pointing at the current holder in the Clicks object
+        holder = Init.getClicks().holder;
 
         BigDecimal currentDecimalAnswer = BigDecimal.valueOf(Double.parseDouble(getNumber(0).toString()));
         // iterate through the operators list
@@ -156,7 +198,7 @@ public class Equate {
                     break;
             }
         }
-       return currentDecimalAnswer.stripTrailingZeros();
+        return BigDecimal.valueOf(currentDecimalAnswer.stripTrailingZeros().doubleValue());
     }
 
     /**
@@ -173,11 +215,21 @@ public class Equate {
 
         // make equals button un-clickable until required arguments are met
         Init.getClicks().binding.buttonEquals.setClickable(false);
-        Init.getFun().clearLists();
+        if (!(holder instanceof PercentageHolder)){
+            Init.getFun().clearLists();
+        }
 
         // make both variables equal to the answer
         Init.getClicks().sumToCalculate = new StringBuilder(toReturn);
-        Init.getClicks().holder.currentNumber = toReturn;
+
+        Log.d("HOLDER CREATION", "" + Init.getClicks().holders.size());
+
+        if (holder instanceof PercentageHolder){
+            holder = Init.getClicks().holders.getLast();
+            Init.getClicks().holder.currentNumber = toReturn;
+        } else {
+            Init.getClicks().holder.currentNumber = toReturn;
+        }
 
         // Only make decimalButton clickable if answer is not already a decimal number
         Init.getClicks().binding.buttonDecimal.setClickable(!holder.currentNumber.contains("."));

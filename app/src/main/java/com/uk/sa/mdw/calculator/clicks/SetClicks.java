@@ -17,10 +17,13 @@
 
 package com.uk.sa.mdw.calculator.clicks;
 
+import android.os.Build;
 import android.view.View;
 import android.widget.Button;
 
-import com.uk.sa.mdw.calculator.Init;
+import androidx.annotation.RequiresApi;
+
+import com.uk.sa.mdw.calculator.state.Init;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +34,7 @@ import java.util.List;
  * {@link com.uk.sa.mdw.calculator.calculate.Equate} for calculations.
  *
  * @author Michael David Willis
- * @version 0.4
+ * @version 0.5
  */
 public class SetClicks extends SpecialClicks {
 
@@ -41,7 +44,8 @@ public class SetClicks extends SpecialClicks {
      * {@code setListeners} sets the OnClickListeners to the decimal button and all numeric
      * and special buttons.
      */
-    public void setListeners() {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setNumerics() {
 
         // Numeric buttons - NumericClicks
         List<View> clickableViewsConcat = new ArrayList<>();
@@ -62,17 +66,12 @@ public class SetClicks extends SpecialClicks {
         }
 
         // Decimal button - NumericClicks
-        if (!holder.currentNumber.contains("."))
-        binding.buttonDecimal.setOnClickListener(view -> {
-            Init.getClicks().makeDecimal();
-            view.setClickable(false);
-        });
-
-        // AC button functionality - SpecialClicks
-        binding.buttonAllCancel.setOnClickListener(view -> setAC());
-
-        // Negative Button - SpecialClicks
-        binding.buttonNegative.setOnClickListener(view -> setNegative());
+        if (!holder.currentNumber.contains(".")) {   // check if currentNumber is already a decimal
+            binding.buttonDecimal.setOnClickListener(view -> {
+                Init.getClicks().makeDecimal();
+                view.setClickable(false);
+            });
+        }
 
         // Parentheses Button - NumericClicks
         binding.buttonParentheses.setOnClickListener(view -> parentheses());
@@ -85,6 +84,7 @@ public class SetClicks extends SpecialClicks {
      * Each is added to an ArrayList, clickableViewOperations, and then a for loop is used to
      * set the listeners to each in turn. Also sets the equals button if conditions are met.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setOperations() {
 
         // Operation buttons
@@ -96,13 +96,25 @@ public class SetClicks extends SpecialClicks {
         for (View view : clickableViewOperations) {
             view.setOnClickListener(view1 -> Init.getClicks().operationHandler(view1));
         }
+
         // Equals button
-        if (holder.values.size() > 1
-                || holder.values.size() > 0 && holder.currentNumber.length() > 0) {
+        if (holder.values.size() > 1                    // 2 or more numbers in values
+                || holder.values.size() > 0             // or 1 number in values and
+                && holder.currentNumber.length() > 0) { // there is a number in currentNumber
             binding.buttonEquals.setOnClickListener(view -> {
                 Init.getFun().addNumberToList(holder);
                 Init.getEquate().totalAnswer();
             });
+        }
+
+        // Percentage button
+        if (holder.currentNumber.length() > 0) {
+            binding.buttonPercent.setOnClickListener(view -> setPercentage());
+        }
+
+        // Square Root button
+        if (holder.currentNumber.length() > 0) {
+            binding.buttonRoot.setOnClickListener(view -> setRoot());
         }
     }
 
@@ -116,7 +128,6 @@ public class SetClicks extends SpecialClicks {
         // - a parentheses is opened and an operator has yet to be entered
         // - if the last character in sumToCalculate is a number
         // - if there is no parentheses open and the last character in sumToCalculate is a number
-
         if (parenthesesOpen > 0                                     // parentheses is open
                 && holder.operators.size() == 0                     // and no operators and
                 && holder.operators.size() == holder.values.size()  // operators & values same size
@@ -130,5 +141,29 @@ public class SetClicks extends SpecialClicks {
         } else {
             binding.buttonParentheses.setClickable(true);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setSpecials(){
+        // AC button functionality - SpecialClicks
+        binding.buttonAllCancel.setOnClickListener(view -> setAC());
+
+        // Square button - SpecialClicks
+        binding.buttonSquare.setOnClickListener(view -> {
+            setSquare();
+            setOperations();
+        });
+
+        // Negative Button - SpecialClicks
+        binding.buttonNegative.setOnClickListener(view -> setNegative());
+
+        // Memory Store Button - SpecialClicks
+        binding.buttonMemoryStore.setOnClickListener(view -> setMemoryStore());
+
+        // Memory Recall Button - SpecialClicks
+        binding.buttonMemoryRecall.setOnClickListener(view -> {
+            setMemoryRecall();
+            setOperations();
+        });
     }
 }

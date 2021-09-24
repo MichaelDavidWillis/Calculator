@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-<!-- Layout -->
+    <!-- Layout -->
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -31,7 +31,6 @@
             android:id="@+id/calculator_display"
             style="@style/answer_display"
             android:background="@color/white"
-            android:text=""
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -48,63 +47,63 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/calculator_display">
 
-<!-- Buttons -->
+            <!-- Buttons -->
 
-    <!-- Special Buttons -->
+            <!-- Special Buttons -->
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/button_memory_store"
                 style="@style/specials"
                 android:layout_marginTop="16dp"
-                android:text="@string/button_blank_text"
-                app:layout_constraintBottom_toTopOf="@+id/button_all_cancel"
-                app:layout_constraintEnd_toStartOf="@+id/button2"
+                android:text="@string/button_memory_store_text"
+                app:layout_constraintBottom_toTopOf="@+id/button_memory_recall"
+                app:layout_constraintEnd_toStartOf="@+id/button_root"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/button_root"
                 style="@style/specials"
                 android:layout_marginTop="16dp"
-                android:text="@string/button_blank_text"
+                android:text="@string/button_square_root_text"
                 app:layout_constraintBottom_toTopOf="@+id/button_negative"
-                app:layout_constraintEnd_toStartOf="@+id/button3"
+                app:layout_constraintEnd_toStartOf="@+id/button_square"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/button1"
+                app:layout_constraintStart_toEndOf="@+id/button_memory_store"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/button_square"
                 style="@style/specials"
                 android:layout_marginTop="16dp"
-                android:text="@string/button_blank_text"
+                android:text="@string/button_square_text"
                 app:layout_constraintBottom_toTopOf="@+id/button_percent"
-                app:layout_constraintEnd_toStartOf="@+id/button4"
+                app:layout_constraintEnd_toStartOf="@+id/button_all_cancel"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/button4"
-                style="@style/specials"
-                android:layout_marginTop="16dp"
-                android:text="@string/button_blank_text"
-                app:layout_constraintBottom_toTopOf="@+id/button_divide"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/button3"
+                app:layout_constraintStart_toEndOf="@+id/button_root"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/button_all_cancel"
-                style="@style/specials"
+                style="@style/ac"
+                android:layout_marginTop="16dp"
                 android:text="@string/button_ac_text"
+                app:layout_constraintBottom_toTopOf="@+id/button_divide"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_square"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/button_memory_recall"
+                style="@style/specials"
+                android:text="@string/button_memory_recall_text"
                 app:layout_constraintBottom_toTopOf="@+id/button_seven"
                 app:layout_constraintEnd_toStartOf="@+id/button_negative"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button1" />
+                app:layout_constraintTop_toBottomOf="@+id/button_memory_store" />
 
             <Button
                 android:id="@+id/button_negative"
@@ -113,8 +112,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/button_eight"
                 app:layout_constraintEnd_toStartOf="@+id/button_percent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/button_all_cancel"
-                app:layout_constraintTop_toBottomOf="@+id/button2" />
+                app:layout_constraintStart_toEndOf="@+id/button_memory_recall"
+                app:layout_constraintTop_toBottomOf="@+id/button_root" />
 
             <Button
                 android:id="@+id/button_percent"
@@ -124,9 +123,9 @@
                 app:layout_constraintEnd_toStartOf="@+id/button_divide"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/button_negative"
-                app:layout_constraintTop_toBottomOf="@+id/button3" />
+                app:layout_constraintTop_toBottomOf="@+id/button_memory_store" />
 
-    <!-- Numerical Buttons -->
+            <!-- Numerical Buttons -->
 
             <Button
                 android:id="@+id/button_zero"
@@ -210,7 +209,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/button_eight"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_all_cancel" />
+                app:layout_constraintTop_toBottomOf="@+id/button_memory_recall" />
 
             <Button
                 android:id="@+id/button_eight"
@@ -232,7 +231,29 @@
                 app:layout_constraintStart_toEndOf="@+id/button_eight"
                 app:layout_constraintTop_toBottomOf="@+id/button_percent" />
 
-    <!-- Operator Buttons -->
+            <Button
+                android:id="@+id/button_decimal"
+                style="@style/numbers"
+                android:layout_marginBottom="16dp"
+                android:text="@string/button_decimal_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_parentheses"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_zero"
+                app:layout_constraintTop_toBottomOf="@+id/button_two" />
+
+            <Button
+                android:id="@+id/button_parentheses"
+                style="@style/numbers"
+                android:layout_marginBottom="16dp"
+                android:text="@string/button_parentheses_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_equals"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_decimal"
+                app:layout_constraintTop_toBottomOf="@+id/button_three" />
+
+            <!-- Operator Buttons -->
 
             <Button
                 android:id="@+id/button_equals"
@@ -283,29 +304,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/button_percent"
-                app:layout_constraintTop_toBottomOf="@+id/button4" />
-
-            <Button
-                android:id="@+id/button_decimal"
-                style="@style/operators"
-                android:layout_marginBottom="16dp"
-                android:text="@string/button_decimal_text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/button_parentheses"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/button_zero"
-                app:layout_constraintTop_toBottomOf="@+id/button_two" />
-
-            <Button
-                android:id="@+id/button_parentheses"
-                style="@style/operators"
-                android:layout_marginBottom="16dp"
-                android:text="@string/button_parentheses_text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/button_equals"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/button_decimal"
-                app:layout_constraintTop_toBottomOf="@+id/button_three" />
+                app:layout_constraintTop_toBottomOf="@+id/button_all_cancel" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -16,17 +16,20 @@
  */
 package com.uk.sa.mdw.calculator.clicks;
 
+import android.os.Build;
 import android.util.Log;
 import android.widget.Button;
 
-import com.uk.sa.mdw.calculator.Holder;
-import com.uk.sa.mdw.calculator.Init;
+import androidx.annotation.RequiresApi;
+
+import com.uk.sa.mdw.calculator.state.Holder;
+import com.uk.sa.mdw.calculator.state.Init;
 
 /**
  * {@code NumericClicks} class defines numerical button click operations of the calculator
  * application.
  *
- * @version 0.4
+ * @version 0.5
  * @author Michael David Willis
  */
 public class NumericClicks extends ClicksBase{
@@ -38,6 +41,7 @@ public class NumericClicks extends ClicksBase{
      *
      * @param buttonPressed the numeric button pressed to call the command
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void concatToCurrentNumber(Button buttonPressed) {
         // add digit to number
         sumToCalculate.append(buttonPressed.getText().toString());
@@ -46,6 +50,7 @@ public class NumericClicks extends ClicksBase{
         updateDisplay(Init.getClicks().binding.currentSum, sumToCalculate.toString());
         // decide to allow parentheses button to be clickable
         Init.getClicks().decideParenthesesButton();
+        Init.getClicks().setSpecials();
         // set listeners on the operational buttons
         Init.getClicks().setOperations();
     }
@@ -78,6 +83,7 @@ public class NumericClicks extends ClicksBase{
      * {@code openParentheses} to open a new parentheses or {@code closeParentheses} to close
      * the current parentheses.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void parentheses(){
         if (parenthesesOpen == 0                                    // counter is empty or
                 || holder.values.size() == holder.operators.size()  // equal values and operators
@@ -103,7 +109,7 @@ public class NumericClicks extends ClicksBase{
         // Add open parentheses to display
         sumToCalculate.append("(");
         // Send current Holder to be stored in ArrayList holders
-        holders.add(holder);
+        holders.addLast(holder);
         // make a new Holder
         holder = new Holder();
         // Increment parentheses counter
@@ -123,9 +129,9 @@ public class NumericClicks extends ClicksBase{
         // Decrement parentheses counter
         parenthesesOpen--;
         // get previous Holder to be stored in ArrayList holders
-        holder = holders.get(parenthesesOpen);
+        holder = holders.getLast();
         // remove that Holder from the ArrayList holders
-        holders.remove(parenthesesOpen);
+        holders.removeLast();
         // make Holder's currentNumber equal the answer of previous Holder
         holder.currentNumber = answer;
         // Update display
@@ -134,10 +140,6 @@ public class NumericClicks extends ClicksBase{
         if(parenthesesOpen == 0){
             binding.buttonEquals.setClickable(true);
         }
-        if(parenthesesOpen > 0) {
-            binding.buttonParentheses.setClickable(true);
-        } else {
-            binding.buttonParentheses.setClickable(false);
-        }
+        binding.buttonParentheses.setClickable(parenthesesOpen > 0);
     }
 }

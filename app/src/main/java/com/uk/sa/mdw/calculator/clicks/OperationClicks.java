@@ -16,16 +16,19 @@
  */
 package com.uk.sa.mdw.calculator.clicks;
 
+import android.os.Build;
 import android.view.View;
 import android.widget.Button;
 
-import com.uk.sa.mdw.calculator.Init;
+import androidx.annotation.RequiresApi;
+
+import com.uk.sa.mdw.calculator.state.Init;
 
 /**
  * {@code OperationClicks} class defines operational button click operations of the calculator
  * application.
  *
- * @version 0.4
+ * @version 0.5
  * @author Michael David Willis
  */
 public class OperationClicks extends NumericClicks {
@@ -40,6 +43,7 @@ public class OperationClicks extends NumericClicks {
      *
      * @param view the operation button pressed to call the command
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void operationHandler(View view) {
         // save the number
         Init.getFun().addNumberToList(holder);

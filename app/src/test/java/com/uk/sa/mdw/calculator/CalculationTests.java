@@ -21,6 +21,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import com.uk.sa.mdw.calculator.state.Init;
+
 /**
  * Testing for each of the implemented operations in both integer & decimal calculations.
  *
